@@ -104,15 +104,16 @@
             // openRomToolStripMenuItem
             // 
             this.openRomToolStripMenuItem.Name = "openRomToolStripMenuItem";
-            this.openRomToolStripMenuItem.Size = new System.Drawing.Size(159, 26);
+            this.openRomToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.openRomToolStripMenuItem.Text = "Open rom";
             this.openRomToolStripMenuItem.Click += new System.EventHandler(this.openRomToolStripMenuItem_Click);
             // 
             // saveRomToolStripMenuItem
             // 
             this.saveRomToolStripMenuItem.Name = "saveRomToolStripMenuItem";
-            this.saveRomToolStripMenuItem.Size = new System.Drawing.Size(159, 26);
+            this.saveRomToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.saveRomToolStripMenuItem.Text = "Save rom";
+            this.saveRomToolStripMenuItem.Visible = false;
             this.saveRomToolStripMenuItem.Click += new System.EventHandler(this.saveRomToolStripMenuItem_Click);
             // 
             // toolsToolStripMenuItem
@@ -129,28 +130,28 @@
             // romInfoToolStripMenuItem
             // 
             this.romInfoToolStripMenuItem.Name = "romInfoToolStripMenuItem";
-            this.romInfoToolStripMenuItem.Size = new System.Drawing.Size(197, 26);
+            this.romInfoToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.romInfoToolStripMenuItem.Text = "Rom info";
             this.romInfoToolStripMenuItem.Click += new System.EventHandler(this.romInfoToolStripMenuItem_Click);
             // 
             // dialogueEditorToolStripMenuItem
             // 
             this.dialogueEditorToolStripMenuItem.Name = "dialogueEditorToolStripMenuItem";
-            this.dialogueEditorToolStripMenuItem.Size = new System.Drawing.Size(197, 26);
+            this.dialogueEditorToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.dialogueEditorToolStripMenuItem.Text = "Dialogue editor";
             this.dialogueEditorToolStripMenuItem.Click += new System.EventHandler(this.dialogueEditorToolStripMenuItem_Click);
             // 
             // randomizerToolStripMenuItem
             // 
             this.randomizerToolStripMenuItem.Name = "randomizerToolStripMenuItem";
-            this.randomizerToolStripMenuItem.Size = new System.Drawing.Size(197, 26);
+            this.randomizerToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.randomizerToolStripMenuItem.Text = "Randomizer";
             this.randomizerToolStripMenuItem.Click += new System.EventHandler(this.randomizerToolStripMenuItem_Click);
             // 
             // randoTrackerToolStripMenuItem
             // 
             this.randoTrackerToolStripMenuItem.Name = "randoTrackerToolStripMenuItem";
-            this.randoTrackerToolStripMenuItem.Size = new System.Drawing.Size(197, 26);
+            this.randoTrackerToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.randoTrackerToolStripMenuItem.Text = "Rando tracker";
             this.randoTrackerToolStripMenuItem.Click += new System.EventHandler(this.randoTrackerToolStripMenuItem_Click);
             // 
