@@ -1,0 +1,267 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7B4A32D3-8AD9-4DA2-82AF-146DEF28A8F8}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Cradle</RootNamespace>
+    <AssemblyName>Cradle</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\jenicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="src\Rooms\Interaction\Command.cs" />
+    <Compile Include="src\Utility\Decompressor.cs" />
+    <Compile Include="src\Global\Dialogue.cs" />
+    <Compile Include="src\Global\Dictionaries.cs" />
+    <Compile Include="src\Forms\Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\Forms\Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ImageRelated\imageTools.cs" />
+    <Compile Include="src\Rooms\Interaction\InteractionScript.cs" />
+    <Compile Include="src\Forms\InteractionScriptForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\Forms\InteractionScriptForm.Designer.cs">
+      <DependentUpon>InteractionScriptForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\Rooms\Object.cs" />
+    <Compile Include="src\ImageRelated\Palette.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\Forms\Randomizer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\Forms\Randomizer.Designer.cs">
+      <DependentUpon>Randomizer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\Forms\RandoTracker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\Forms\RandoTracker.Designer.cs">
+      <DependentUpon>RandoTracker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\Global\rom.cs" />
+    <Compile Include="src\Forms\RomInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\Forms\RomInfo.Designer.cs">
+      <DependentUpon>RomInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\Rooms\room.cs" />
+    <Compile Include="src\MaybeDeprecated\Sprite.cs" />
+    <Compile Include="src\Forms\TextEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\Forms\TextEditor.Designer.cs">
+      <DependentUpon>TextEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\MaybeDeprecated\Tile.cs" />
+    <Compile Include="src\Utility\utility.cs" />
+    <EmbeddedResource Include="src\Forms\Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Forms\InteractionScriptForm.resx">
+      <DependentUpon>InteractionScriptForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="src\Forms\Randomizer.resx">
+      <DependentUpon>Randomizer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Forms\RandoTracker.resx">
+      <DependentUpon>RandoTracker.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Forms\RomInfo.resx">
+      <DependentUpon>RomInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Forms\TextEditor.resx">
+      <DependentUpon>TextEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <None Include="Resources\rockwell.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\blackrobe.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\cagekey.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\carkey.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dagger.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\demonidol.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\greenkey.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ham.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\insecticide.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\lantern.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\perfume.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rock.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\rope.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\staff.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\anne.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\anne2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\laura.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\laura2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\lotte.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\lotte2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\NoTruth.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\truth.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\haveknowledge.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\knowledge.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\father.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\notfoundfather.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\noblackrobe.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\nocarkey.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\nodagger.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\nodemonidol.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\nogreenkey.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\noham.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\noinsecticide.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\nolantern.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\noperfume.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\norock.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\norope.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\nostaff.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\nocagekey.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\jenicon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\Extra\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
