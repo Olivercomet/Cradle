@@ -27,12 +27,19 @@ namespace Cradle
 			return BitConverter.ToUInt32(snesOffsetAsBytes, 0);
 		}
 
-		public static UInt32 ConvertToSNESOffset(uint addr)
+		public static uint ConvertToSNESOffset(uint addr)
         {
             addr = 0xc00000 + (addr & 0x3fffff);
             return addr;
         }
 
+
+		public static uint Read3Bytes(Byte[] bytes, int offset)
+		{
+			uint output = (bytes[offset + 2] * (uint)0x10000) + (bytes[offset + 1] * (uint)0x100) + (bytes[offset]);
+
+			return output;
+		}
 
 		public static int GetPCOffset(Byte[] input, int pos)
 		{   //reads three bytes and converts them to a PC offset
@@ -52,15 +59,5 @@ namespace Cradle
 
 			return BitConverter.ToInt32(snesOffsetAsBytes, 0);
 		}
-
-
-
-
-
-
-
-
-
-
 	}
 }

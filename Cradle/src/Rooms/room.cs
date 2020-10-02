@@ -167,17 +167,12 @@ namespace Cradle
 
 		public void LoadBackgroundTileGraphics(int compressedFileIndex)
 		{
-
 			Byte[] background_graphics = Decompressor.Decompress(compressedFileIndex).ToArray();
 
 			ushort tileAttribute = 0;
 			ushort tileID = 0;
 			Byte PaletteID = 0;
 			Palette palette = null;
-
-			float xPos = 0;
-			float yPos = 0;
-			float zPos = 0;
 
 			int tilemap_pos_X = 0;
 			int tilemap_pos_Y = 0;
@@ -303,8 +298,5 @@ namespace Cradle
             //maybe the tilemaps aren't just straight data, obviously they've got those four bytes at the start for height and width (see immediately above), but could there still be other things mixed in with the data. It gets loaded in column-of-two by column-of-two - is there any data between those columns?
            //File.WriteAllBytes(Application.streamingAssetsPath + "\\decompressed", background_tilemap);
         }
-
-
-
     }
 }

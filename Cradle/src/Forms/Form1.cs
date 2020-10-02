@@ -41,10 +41,6 @@ namespace Cradle
         public Byte[] RomAGHash = new Byte[] { 0x2F, 0xDC, 0x76, 0x59, 0x67, 0x50, 0x69, 0x40, 0x94, 0x50, 0x84, 0xEA, 0x7F, 0x42, 0xEC, 0xAA };
         public Byte[] RomAGHash2 = new Byte[] { 0xD0, 0x17, 0x40, 0x68, 0xFF, 0x7F, 0x06, 0x09, 0x2E, 0x0F, 0x66, 0x9A, 0x61, 0x88, 0xDB, 0xF2 };
 
-
-
-        public Dictionary<int, Sprite> SpriteAssemblyIDsAndSprites = new Dictionary<int, Sprite>();
-        
         
         public List<string> SpoilerLog = new List<string>();
 
@@ -58,12 +54,6 @@ namespace Cradle
 
             this.Icon = Properties.Resources.jenicon;
             FormBorderStyle = FormBorderStyle.FixedSingle;
-
-
-            
-
-            
-
         }
 
 
@@ -72,8 +62,7 @@ namespace Cradle
      
         public void StartUp() {
 
-           
-
+            Dictionaries.RoomIndexAndOffset = new Dictionary<int, int>();
             Dictionaries.DialogueIDAndDialogue = new Dictionary<int, Dialogue>();
 
             using (BinaryReader reader = new BinaryReader(File.Open(activeRomFilename, FileMode.Open)))
@@ -142,27 +131,14 @@ namespace Cradle
             if (index != System.Windows.Forms.ListBox.NoMatches && RoomListBox.Items[index].ToString() != "Invalid")
             {
                 LoadRoom(index);
+                CurrentRoom.objects[0].SpecialSprite = "scissorman";    //TEMP
+                CurrentRoom.objects[0].LoadAnimation(0x70, false);      //TEMP
             }
         }
 
-        public void OutputImage(List<Byte> blob, int id)
-        {
-            byte[] pData = blob.ToArray();
-            Bitmap bm = new Bitmap(16,16,System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-            for (int y = 0; y < 16; y++)
-                {
-                for (int x = 0; x < 16; x++)
-                    {
-                    bm.SetPixel(x, y, Color.FromArgb(255,blob[(y * 16) + x]*15, blob[(y * 16) + x] * 15, blob[(y * 16) + x] * 15));
-                    }
-                }
-            bm.Save(activeRomFilename+"tile"+id+".png", System.Drawing.Imaging.ImageFormat.Png);
-
-        }
 
         public void LoadRoom(int index)
         {
-            
             ushort CurrentRoomID = roomIDList[index];
 
             if (!IDsAndRooms.Keys.Contains(CurrentRoomID))
@@ -173,8 +149,8 @@ namespace Cradle
                 newRoom.offset = roomIDList[index];
                 newRoom.name = Dictionaries.RoomIDsAndNames[newRoom.offset];
 
-                newRoom.objectListOffset = utility.ConvertToPCOffset(Read3Bytes(rom.filebytes, newRoom.offset + 0x1C));
-                newRoom.objectListLastOffset = utility.ConvertToPCOffset(Read3Bytes(rom.filebytes, newRoom.offset + 0x22));
+                newRoom.objectListOffset = utility.ConvertToPCOffset(utility.Read3Bytes(rom.filebytes, newRoom.offset + 0x1C));
+                newRoom.objectListLastOffset = utility.ConvertToPCOffset(utility.Read3Bytes(rom.filebytes, newRoom.offset + 0x22));
 
                 int currentOffset = newRoom.offset = roomIDList[index];
 
@@ -313,14 +289,7 @@ namespace Cradle
 
             return Bytes;
         }
-        public UInt32 ReadUInt32(List<Byte> bytes, int offset) {
 
-            uint output = (bytes[offset+3]*(uint)0x1000000) + (bytes[offset+2] * (uint)0x10000) + (bytes[offset + 1] * (uint)0x100) + (bytes[offset]);
-
-            return output;
-        }
-
- 
 
         public void WriteUInt16(Byte[] bytes, int offset, ushort data)
         {
@@ -343,12 +312,7 @@ namespace Cradle
         }
 
 
-        public UInt32 Read3Bytes(Byte[] bytes, int offset)
-        {
-            uint output = (bytes[offset+2] * (uint)0x10000) + (bytes[offset+1] * (uint)0x100) + (bytes[offset]);
-
-            return output;
-        }
+        
 
 
        
@@ -393,7 +357,6 @@ namespace Cradle
                 {
                     StartUp();
                 }
-
             }
         }
 
@@ -484,18 +447,6 @@ namespace Cradle
             }
         }
 
-        public void LoadGraphic()
-        {
-
-
-
-
-
-
-
-
-
-        }
 
         public void LoadText() {
 
@@ -667,8 +618,6 @@ namespace Cradle
                     }
 
                 Dictionaries.DialogueIDAndDialogue[i].originalLength++; //to accommodate the 0xFF
-
-
             }
 
         }
@@ -1060,7 +1009,8 @@ namespace Cradle
                 rominfo.aeonYesNo.Text = "No translation detected.";
             }
 
-            /*if (activeRomHash == VanillaRomJP_Hash)
+            /*
+            if (activeRomHash == VanillaRomJP_Hash)
                 {
                 rominfo.hashMatchLabel.Text = "Hash matches Vanilla JP rom.";
                 }
@@ -1104,7 +1054,6 @@ namespace Cradle
                     PrivateFontCollection pfc = new PrivateFontCollection();
 
                     //Select your font from the resources.
-                    //My font here is "Digireu.ttf"
                     int fontLength = Properties.Resources.rockwell.Length;
 
                     // create a buffer to read in to
@@ -1125,8 +1074,6 @@ namespace Cradle
                 texteditor.DisplayText();
                 texteditor.Show();
                 }
-            
-            
         }
 
         private void randomizerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1149,14 +1096,6 @@ namespace Cradle
         {
             RandoTracker randoTracker = new RandoTracker();
             randoTracker.Show();
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            foreach (Tile t in SpriteAssemblyIDsAndSprites[2].tiles)
-                {
-                OutputImage(t.image, SpriteAssemblyIDsAndSprites[2].tiles.IndexOf(t));
-                }
         }
     }
 }

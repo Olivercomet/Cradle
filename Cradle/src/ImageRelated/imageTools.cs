@@ -320,9 +320,9 @@ namespace Cradle
 						}
 
 					if (flipY)
-					{
+						{
 						destY = ypos + ((SmallImage.Height - 1) - y);
-					}
+						}
 
 					BigImage.SetPixel(destX, destY, SmallImage.GetPixel(x,y));	
 					}

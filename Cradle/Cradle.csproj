@@ -92,14 +92,12 @@
       <DependentUpon>RomInfo.cs</DependentUpon>
     </Compile>
     <Compile Include="src\Rooms\room.cs" />
-    <Compile Include="src\MaybeDeprecated\Sprite.cs" />
     <Compile Include="src\Forms\TextEditor.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\Forms\TextEditor.Designer.cs">
       <DependentUpon>TextEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\MaybeDeprecated\Tile.cs" />
     <Compile Include="src\Utility\utility.cs" />
     <EmbeddedResource Include="src\Forms\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

@@ -11,7 +11,6 @@ namespace Cradle
 
         public static Dictionary<ushort, string> BackgroundIDsAndNames = new Dictionary<ushort, string>();
 
-
         public static Dictionary<int, string> ItemIDsAndNames = new Dictionary<int, string>();
 
         public static Dictionary<string, int> ItemsAndIDs = new Dictionary<string,int>();

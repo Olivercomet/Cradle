@@ -11,7 +11,6 @@ using System.Windows.Forms;
 
 namespace Cradle
 {
-
     public partial class Randomizer : Form
     {
         public Form1 form1;
@@ -91,9 +90,6 @@ namespace Cradle
                     form1.SpoilerLog.Add(item + " REPLACED WITH " + RandomizedItems[items.IndexOf(item)]);
                 
                     }
-
-                
-
             }
 
 
@@ -140,7 +136,6 @@ namespace Cradle
                 Swap(list, 0, rnd.Next(0, i));
             }
 
-
             return list;
         }
 
@@ -151,12 +146,5 @@ namespace Cradle
             list[j] = temp;
             return list;
         }
-
-        private void ultimateHardMode_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
     }
-
-    
 }
