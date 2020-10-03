@@ -92,9 +92,9 @@ namespace Cradle
 
                 if (newObject.offsetOfInteractionScript > 0x003F0000)   //blagging this, I don't know what it actually does in these cases
                 {
-                    currentOffset -= 0x01;
-                    newObject.offsetOfInteractionScript = newObject.offsetOfInteractionScript + rom.filebytes[(int)currentOffset];
-                    currentOffset++;
+                    //currentOffset -= 0x01;
+                    //newObject.offsetOfInteractionScript = newObject.offsetOfInteractionScript + rom.filebytes[(int)currentOffset];
+                    //currentOffset++;
                 }
             }
 
@@ -223,7 +223,19 @@ namespace Cradle
 					tileID = (ushort)(tileAttribute & 0x03FF);
 					PaletteID = (byte)(((tileAttribute & 0x3C00) >> 10) & 0xFF);
 
-					palette = background_palettes[PaletteID];
+                    if  (PaletteID < background_palettes.Length)
+                        {
+                        palette = background_palettes[PaletteID];   //load from background palettes
+                        }
+                    else if ((PaletteID - 8) < foreground_palettes.Length)
+                        {
+                        palette = foreground_palettes[PaletteID - 8];   //load from foreground palettes
+                        }
+                    else
+                        {
+                        Console.WriteLine("Could not locate palette in background palettes or foreground palettes. Probable cause is that foreground palettes are not yet implemented?");
+                        }
+					
 
                     bool flipY = false;
                     bool flipX = false;
@@ -271,6 +283,13 @@ namespace Cradle
 						tilemap_pos_X--;
 						tilemap_pos_Y++;
 					}
+
+                    if ((j == 0 || j == 2) && tilemap_pos_X >= tilemap_width) //if it's an odd number of tiles wide, then the last column can't be in the grid pattern
+                        {
+                        tilemap_pos_X--;
+                        tilemap_pos_Y++;
+                        j++;
+                        }
 				}
 
 				if (tilemap_pos_Y >= (tilemap_height))

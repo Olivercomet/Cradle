@@ -21,8 +21,8 @@ namespace Cradle
 
             Command newCommand = new Command();
 
-            newCommand.CommandType = rom.filebytes[currentoffset];
-            switch (newCommand.CommandType)
+            newCommand.commandType = (Command.CommandType)rom.filebytes[currentoffset];
+            switch ((byte)newCommand.commandType)
                 {
 
                 case 0x12:  //jump to command

@@ -241,7 +241,7 @@ namespace Cradle
             }
             else
             {
-                ObjectInteractionScriptButton.Text = ByteArrayToHexString(BitConverter.GetBytes(utility.ConvertToSNESOffset((uint)(CurrentRoom.objects[(int)numericUpDown1.Value].offsetOfInteractionScript))));
+                ObjectInteractionScriptButton.Text = ByteArrayToHexString(BitConverter.GetBytes((uint)(CurrentRoom.objects[(int)numericUpDown1.Value].offsetOfInteractionScript)));
             }
         }
 
@@ -1096,6 +1096,11 @@ namespace Cradle
         {
             RandoTracker randoTracker = new RandoTracker();
             randoTracker.Show();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            pictureBox1.Image.Save("export.png");
         }
     }
 }

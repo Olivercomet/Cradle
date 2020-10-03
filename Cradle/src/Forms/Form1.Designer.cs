@@ -64,6 +64,7 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.ObjectsBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ObjectPlayerPosY_box)).BeginInit();
@@ -104,14 +105,14 @@
             // openRomToolStripMenuItem
             // 
             this.openRomToolStripMenuItem.Name = "openRomToolStripMenuItem";
-            this.openRomToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.openRomToolStripMenuItem.Size = new System.Drawing.Size(159, 26);
             this.openRomToolStripMenuItem.Text = "Open rom";
             this.openRomToolStripMenuItem.Click += new System.EventHandler(this.openRomToolStripMenuItem_Click);
             // 
             // saveRomToolStripMenuItem
             // 
             this.saveRomToolStripMenuItem.Name = "saveRomToolStripMenuItem";
-            this.saveRomToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.saveRomToolStripMenuItem.Size = new System.Drawing.Size(159, 26);
             this.saveRomToolStripMenuItem.Text = "Save rom";
             this.saveRomToolStripMenuItem.Visible = false;
             this.saveRomToolStripMenuItem.Click += new System.EventHandler(this.saveRomToolStripMenuItem_Click);
@@ -130,28 +131,28 @@
             // romInfoToolStripMenuItem
             // 
             this.romInfoToolStripMenuItem.Name = "romInfoToolStripMenuItem";
-            this.romInfoToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.romInfoToolStripMenuItem.Size = new System.Drawing.Size(197, 26);
             this.romInfoToolStripMenuItem.Text = "Rom info";
             this.romInfoToolStripMenuItem.Click += new System.EventHandler(this.romInfoToolStripMenuItem_Click);
             // 
             // dialogueEditorToolStripMenuItem
             // 
             this.dialogueEditorToolStripMenuItem.Name = "dialogueEditorToolStripMenuItem";
-            this.dialogueEditorToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.dialogueEditorToolStripMenuItem.Size = new System.Drawing.Size(197, 26);
             this.dialogueEditorToolStripMenuItem.Text = "Dialogue editor";
             this.dialogueEditorToolStripMenuItem.Click += new System.EventHandler(this.dialogueEditorToolStripMenuItem_Click);
             // 
             // randomizerToolStripMenuItem
             // 
             this.randomizerToolStripMenuItem.Name = "randomizerToolStripMenuItem";
-            this.randomizerToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.randomizerToolStripMenuItem.Size = new System.Drawing.Size(197, 26);
             this.randomizerToolStripMenuItem.Text = "Randomizer";
             this.randomizerToolStripMenuItem.Click += new System.EventHandler(this.randomizerToolStripMenuItem_Click);
             // 
             // randoTrackerToolStripMenuItem
             // 
             this.randoTrackerToolStripMenuItem.Name = "randoTrackerToolStripMenuItem";
-            this.randoTrackerToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.randoTrackerToolStripMenuItem.Size = new System.Drawing.Size(197, 26);
             this.randoTrackerToolStripMenuItem.Text = "Rando tracker";
             this.randoTrackerToolStripMenuItem.Click += new System.EventHandler(this.randoTrackerToolStripMenuItem_Click);
             // 
@@ -430,6 +431,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.button1);
             this.groupBox1.Controls.Add(this.RoomOffsetLabel);
             this.groupBox1.Controls.Add(this.RoomListBox);
             this.groupBox1.Location = new System.Drawing.Point(13, 32);
@@ -475,6 +477,16 @@
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 6;
             this.pictureBox1.TabStop = false;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(17, 470);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(209, 32);
+            this.button1.TabIndex = 3;
+            this.button1.Text = "Export background image";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Form1
             // 
@@ -550,6 +562,7 @@
         private System.Windows.Forms.ToolStripMenuItem dialogueEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem randoTrackerToolStripMenuItem;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Button button1;
     }
 }
 

@@ -93,7 +93,6 @@ namespace Cradle
 
 			int localCurrentOffset = (0x20 * TileID);
 
-
 			Bitmap tex = new Bitmap(8, 8);
 
 			//now load the tile
@@ -103,14 +102,10 @@ namespace Cradle
 
 			for (int i = 0; i < 8; i++) //for each of the 8 lines in the minitile
 			{
-				tex.SetPixel(0, y + i, GetColourFromPalette(Get4BPPSNESPixel(input, localCurrentOffset, (byte)0), palette));
-				tex.SetPixel(1, y + i, GetColourFromPalette(Get4BPPSNESPixel(input, localCurrentOffset, (byte)1), palette));
-				tex.SetPixel(2, y + i, GetColourFromPalette(Get4BPPSNESPixel(input, localCurrentOffset, (byte)2), palette));
-				tex.SetPixel(3, y + i, GetColourFromPalette(Get4BPPSNESPixel(input, localCurrentOffset, (byte)3), palette));
-				tex.SetPixel(4, y + i, GetColourFromPalette(Get4BPPSNESPixel(input, localCurrentOffset, (byte)4), palette));
-				tex.SetPixel(5, y + i, GetColourFromPalette(Get4BPPSNESPixel(input, localCurrentOffset, (byte)5), palette));
-				tex.SetPixel(6, y + i, GetColourFromPalette(Get4BPPSNESPixel(input, localCurrentOffset, (byte)6), palette));
-				tex.SetPixel(7, y + i, GetColourFromPalette(Get4BPPSNESPixel(input, localCurrentOffset, (byte)7), palette));
+				for (int xPixel = 0; xPixel < 8; xPixel++)
+					{
+					tex.SetPixel(xPixel, y + i, GetColourFromPalette(Get4BPPSNESPixel(input, localCurrentOffset, (byte)xPixel), palette));
+					}
 				localCurrentOffset += 2;
 			}
 
@@ -135,10 +130,7 @@ namespace Cradle
 				locationFinder -= 1;
 			}
 
-
 			currentOffset = 0x050000 + (0x80 * locationFinder) + (0x40 * (TileID - locationFinder));
-
-
 
 			Bitmap tex = new Bitmap(16, 16);
 
