@@ -43,8 +43,6 @@ namespace Cradle
             ItemsAndAddresses.Add("CageKey1", 0xC903);
             ItemsAndAddresses.Add("CageKey2", 0xCD06);
             ItemsAndAddresses.Add("GreenKey", 0x2FE616);
-            
-            
         }
 
         private void RandomizeButton_Click(object sender, EventArgs e)
@@ -92,7 +90,6 @@ namespace Cradle
                     }
             }
 
-
             MessageBox.Show("Randomization complete - but remember to click File -> Save!", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -105,7 +102,6 @@ namespace Cradle
             {
                 return false;
             }
-
         }
 
         private void GenerateNewSeed_Click(object sender, EventArgs e)
@@ -114,8 +110,6 @@ namespace Cradle
 
             seedUpDown.Value = NextInt32(rnd);
         }
-
-        
 
         public int NextInt32(Random rng)
         {

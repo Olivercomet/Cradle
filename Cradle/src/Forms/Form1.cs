@@ -7,7 +7,7 @@ using System.Drawing.Text;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
+
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,25 +16,9 @@ namespace Cradle
 {
     public partial class Form1 : Form
     {
-
-        public string activeRomFilename = "";
-
-
-        public Byte[] activeRomHash;
-
-
-        public bool isTranslatedVersion = false;
-
-
         public int currentlySelectedDialogue;
 
-        public List<ushort> roomIDList = new List<ushort>();
-
-        public Dictionary<ushort, room> IDsAndRooms = new Dictionary<ushort, room>();
-
-
-        public room CurrentRoom;
-
+        
         public Byte[] VanillaRomJP_Hash = new Byte[] { 0x51, 0xF8, 0xA9, 0xE9, 0x5E, 0xC5, 0x8F, 0xA5, 0xB9, 0xC3, 0xEC, 0x2D, 0xA5, 0x30, 0xD5, 0x98 };
         public Byte[] VanillaRomJP_bHash = new Byte[] { 0x3A, 0xC3, 0x19, 0x6C, 0x9C, 0x2C, 0x7B, 0x08, 0xCD, 0xA6, 0xF0, 0x36, 0x55, 0x50, 0x76, 0xFC };
         public Byte[] VanillaRomJP_b_c_Hash = new Byte[] { 0x3D, 0xAB, 0xB8, 0x97, 0x35, 0x6F, 0x55, 0x4B, 0xDA, 0x58, 0xB9, 0x39, 0x25, 0xBE, 0x73, 0xA1 };
@@ -54,202 +38,66 @@ namespace Cradle
 
             this.Icon = Properties.Resources.jenicon;
             FormBorderStyle = FormBorderStyle.FixedSingle;
+
+            rom.isStandaloneCradle = true;
+
+            rom.form1 = this;
         }
 
 
        
 
      
-        public void StartUp() {
+        
 
-            Dictionaries.RoomIndexAndOffset = new Dictionary<int, int>();
-            Dictionaries.DialogueIDAndDialogue = new Dictionary<int, Dialogue>();
+        public void LoadRomInCradle(string romFileName) {
 
-            using (BinaryReader reader = new BinaryReader(File.Open(activeRomFilename, FileMode.Open)))
-            {
-                reader.BaseStream.Position = 0x86FC;
-
-                for (int i = 0; i <= 0x3A; i++)
-                {
-                    roomIDList.Add(reader.ReadUInt16());
-                    reader.BaseStream.Position += 1;
-                }
-            }
-
-            byte[] tempRom = File.ReadAllBytes(activeRomFilename);
-
-
-            if (tempRom[0] == 0x8B) //It's a headerless rom. Proceed as usual.
-            {
-                rom.filebytes = tempRom;
-            }
-            else        //it has a header. Remove the header from the byte array.
-            {
-                rom.filebytes = new byte[tempRom.Length - 0x200];
-                Array.Copy(tempRom, 0x200, rom.filebytes, 0, rom.filebytes.Length);
-                tempRom = null;
-            }
-
-
-            for (int i = 0; i < Dictionaries.RoomIDsAndNames.Count; i++)    //read room list in rom
-            {
-                Dictionaries.RoomIndexAndOffset.Add(i, utility.GetPCOffset(rom.filebytes, 0x86FC + (i * 3)));
-            }
-
-            switch (rom.filebytes[0x24B0])
-                {
-                case 0x24:
-                    isTranslatedVersion = false;
-                    break;
-                case 0xD0:
-                    isTranslatedVersion = true;
-                    break;
-                }
-
-            rom.BGPalette0 = imageTools.GetPaletteAtOffset(rom.filebytes, 0x003A59, true);   //not sure if should be true or false
-
-            using (var md5 = MD5.Create())
-            {
-                using (var stream = File.OpenRead(activeRomFilename))
-                {
-                    activeRomHash = md5.ComputeHash(stream);
-                    
-                }
-            }
-
-            foreach (ushort room in roomIDList)
-            {
-                RoomListBox.Items.Add(Dictionaries.RoomIDsAndNames[room]);
-            }
-
+            rom.StartUp(romFileName);
             this.RoomListBox.MouseDoubleClick += new MouseEventHandler(RoomListBox_MouseDoubleClick);
-            }
+        }
+
 
         void RoomListBox_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             int index = this.RoomListBox.IndexFromPoint(e.Location);
             if (index != System.Windows.Forms.ListBox.NoMatches && RoomListBox.Items[index].ToString() != "Invalid")
             {
-                LoadRoom(index);
-                CurrentRoom.objects[0].SpecialSprite = "scissorman";    //TEMP
-                CurrentRoom.objects[0].LoadAnimation(0x70, false);      //TEMP
+                utility.LoadRoom(index);
+                MessageBox.Show("specialsprite and animation were temporarily set to scissorman!");
+                rom.CurrentRoom.objects[0].SpecialSprite = "scissorman";    //TEMP
+                rom.CurrentRoom.objects[0].LoadAnimation(0x70, false);      //TEMP
             }
         }
 
 
-        public void LoadRoom(int index)
-        {
-            ushort CurrentRoomID = roomIDList[index];
-
-            if (!IDsAndRooms.Keys.Contains(CurrentRoomID))
-                {
-                room newRoom = new room();
-                CurrentRoom = newRoom;
-
-                newRoom.offset = roomIDList[index];
-                newRoom.name = Dictionaries.RoomIDsAndNames[newRoom.offset];
-
-                newRoom.objectListOffset = utility.ConvertToPCOffset(utility.Read3Bytes(rom.filebytes, newRoom.offset + 0x1C));
-                newRoom.objectListLastOffset = utility.ConvertToPCOffset(utility.Read3Bytes(rom.filebytes, newRoom.offset + 0x22));
-
-                int currentOffset = newRoom.offset = roomIDList[index];
-
-                int backgroundTilesValue = BitConverter.ToUInt16(rom.filebytes, currentOffset);
-
-                currentOffset += 0x1C;
-
-                newRoom.objectListOffset = (uint)utility.GetPCOffset(rom.filebytes, currentOffset);
-                currentOffset += 0x03;
-                currentOffset += 0x03; //skip an identical offset (although... is it always identical?)
-                newRoom.objectListLastOffset = (uint)utility.GetPCOffset(rom.filebytes, currentOffset);
-                currentOffset += 0x03;
-
-                currentOffset = newRoom.offset + 0x2B;
-                newRoom.foregroundSpritePalettesOffset = utility.GetPCOffset(rom.filebytes, currentOffset);
-
-                currentOffset = newRoom.foregroundSpritePalettesOffset;
-
-                newRoom.foreground_palettes = new Palette[8];
-
-                newRoom.foreground_palettes[1] = imageTools.GetPaletteWithIndex(rom.filebytes, rom.filebytes[currentOffset]);
-                currentOffset++;
-
-                newRoom.foreground_palettes[2] = imageTools.GetPaletteWithIndex(rom.filebytes, rom.filebytes[currentOffset]);
-                currentOffset++;
-
-                newRoom.foreground_palettes[3] = imageTools.GetPaletteWithIndex(rom.filebytes, rom.filebytes[currentOffset]);
-                currentOffset++;
-
-                newRoom.foreground_palettes[4] = imageTools.GetPaletteWithIndex(rom.filebytes, rom.filebytes[currentOffset]);
-                currentOffset++;
-
-                newRoom.foreground_palettes[5] = imageTools.GetPaletteWithIndex(rom.filebytes, rom.filebytes[currentOffset]);
-                currentOffset++;
-
-                newRoom.foreground_palettes[6] = imageTools.GetPaletteWithIndex(rom.filebytes, rom.filebytes[currentOffset]); //usually used for scissorman
-                currentOffset++;
-
-                Console.WriteLine("begin reading foreground palette with index 7");
-                newRoom.foreground_palettes[7] = imageTools.GetPaletteWithIndex(rom.filebytes, rom.filebytes[currentOffset]); //usually used for jennifer
-                currentOffset++;
-
-
-                int backgroundTileGraphicsValue = BitConverter.ToUInt16(rom.filebytes, newRoom.offset + 0x0C);
-                int backgroundPaletteValue = BitConverter.ToUInt16(rom.filebytes, newRoom.offset + 0x0E);
-                Console.WriteLine(backgroundPaletteValue);
-
-                newRoom.LoadBackgroundPalette(backgroundPaletteValue);
-                newRoom.LoadBackgroundTileMap(backgroundTilesValue);
-                newRoom.LoadBackgroundTileGraphics(backgroundTileGraphicsValue);
-
-                newRoom.LoadRoomObjects();
-
-                IDsAndRooms.Add(CurrentRoomID, newRoom);
-                }
-            else
-                {
-                CurrentRoom = IDsAndRooms[CurrentRoomID];
-                }
-
-            pictureBox1.Image = CurrentRoom.background;
-
-            RoomOffsetLabel.Text = "Offset (d): " + roomIDList[RoomListBox.SelectedIndex];
-
-            numericUpDown1.Maximum = CurrentRoom.objects.Count - 1;
-            numericUpDown1.Minimum = 0;
-
-            numericUpDown1.Value = numericUpDown1.Minimum;
-            UpdateObjectPanel();
-        }
+       
 
         public void UpdateObjectPanel() {
 
-            ObjectXPos_box.Text = CurrentRoom.objects[(int)numericUpDown1.Value].Xpos.ToString();
-            ObjectYPos_box.Text = CurrentRoom.objects[(int)numericUpDown1.Value].Ypos.ToString();
-            ObjectUnk1_box.Text = CurrentRoom.objects[(int)numericUpDown1.Value].unk1.ToString();
-            ObjectCursorOffsetX_box.Text = CurrentRoom.objects[(int)numericUpDown1.Value].cursorXPosOffset.ToString();
-            ObjectCursorOffsetY_box.Text = CurrentRoom.objects[(int)numericUpDown1.Value].cursorYPosOffset.ToString();
-            ObjectUnk2_box.Text = CurrentRoom.objects[(int)numericUpDown1.Value].unk2.ToString();
-            ObjectPlayerPosX_box.Text = CurrentRoom.objects[(int)numericUpDown1.Value].playerXPos.ToString();
-            ObjectPlayerPosY_box.Text = CurrentRoom.objects[(int)numericUpDown1.Value].playerYPos.ToString();
-            CurrentObjectOffset.Text = "Offset (d): "+(CurrentRoom.objectListOffset + (0x14 * (int)numericUpDown1.Value)).ToString();
+            ObjectXPos_box.Text = rom.CurrentRoom.objects[(int)numericUpDown1.Value].Xpos.ToString();
+            ObjectYPos_box.Text = rom.CurrentRoom.objects[(int)numericUpDown1.Value].Ypos.ToString();
+            ObjectUnk1_box.Text = rom.CurrentRoom.objects[(int)numericUpDown1.Value].unk1.ToString();
+            ObjectCursorOffsetX_box.Text = rom.CurrentRoom.objects[(int)numericUpDown1.Value].cursorXPosOffset.ToString();
+            ObjectCursorOffsetY_box.Text = rom.CurrentRoom.objects[(int)numericUpDown1.Value].cursorYPosOffset.ToString();
+            ObjectUnk2_box.Text = rom.CurrentRoom.objects[(int)numericUpDown1.Value].unk2.ToString();
+            ObjectPlayerPosX_box.Text = rom.CurrentRoom.objects[(int)numericUpDown1.Value].playerXPos.ToString();
+            ObjectPlayerPosY_box.Text = rom.CurrentRoom.objects[(int)numericUpDown1.Value].playerYPos.ToString();
+            CurrentObjectOffset.Text = "Offset (d): "+(rom.CurrentRoom.objectListOffset + (0x14 * (int)numericUpDown1.Value)).ToString();
 
 
-            if (Dictionaries.ScriptOffsetsAndNames.Keys.Contains(CurrentRoom.objects[(int)numericUpDown1.Value].offsetOfInteractionScript))
+            if (Dictionaries.ScriptOffsetsAndNames.Keys.Contains(rom.CurrentRoom.objects[(int)numericUpDown1.Value].offsetOfInteractionScript))
             {
-                ObjectInteractionScriptButton.Text = Dictionaries.ScriptOffsetsAndNames[CurrentRoom.objects[(int)numericUpDown1.Value].offsetOfInteractionScript];
+                ObjectInteractionScriptButton.Text = Dictionaries.ScriptOffsetsAndNames[rom.CurrentRoom.objects[(int)numericUpDown1.Value].offsetOfInteractionScript];
             }
             else
             {
-                ObjectInteractionScriptButton.Text = ByteArrayToHexString(BitConverter.GetBytes((uint)(CurrentRoom.objects[(int)numericUpDown1.Value].offsetOfInteractionScript)));
+                ObjectInteractionScriptButton.Text = ByteArrayToHexString(BitConverter.GetBytes((uint)(rom.CurrentRoom.objects[(int)numericUpDown1.Value].offsetOfInteractionScript)));
             }
         }
 
         public static string ByteArrayToHexString(byte[] Bytes)
         {
             StringBuilder Result = new StringBuilder(Bytes.Length * 2);
-
-        
 
             string HexAlphabet = "0123456789ABCDEF";
 
@@ -278,8 +126,8 @@ namespace Cradle
         {
             byte[] Bytes = new byte[Hex.Length / 2];
             int[] HexValue = new int[] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05,
-       0x06, 0x07, 0x08, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-       0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
+            0x06, 0x07, 0x08, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F };
 
             for (int x = 0, i = 0; i < Hex.Length; i += 2, x += 1)
             {
@@ -329,34 +177,7 @@ namespace Cradle
 
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                activeRomFilename = openFileDialog1.FileName;
-                byte[] tempbytes = File.ReadAllBytes(activeRomFilename);
-                if (tempbytes[0] == 0x00 && tempbytes[0x10] == 0x00 && tempbytes[0x20] == 0x00 && tempbytes[0x190] == 0x00)
-                {
-                    DialogResult dialogResult = MessageBox.Show("This rom appears to have a header. The header must be removed for the program to work. Remove it?", "Remove header?", MessageBoxButtons.YesNo);
-                    if (dialogResult == DialogResult.Yes)
-                    {
-                        using (BinaryWriter writer = new BinaryWriter(File.Open(activeRomFilename, FileMode.Open)))
-                        {
-                            for (int i = 0x200; i < tempbytes.Length; i++)
-                                {
-                                writer.Write(tempbytes[i]);
-                                }
-                        }
-
-                        tempbytes = File.ReadAllBytes(activeRomFilename);
-
-                        StartUp();
-                    }
-                    else if (dialogResult == DialogResult.No)
-                    {
-                        MessageBox.Show("Headered roms are not compatible with this program.", "Invalid rom", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    }
-                }
-                else
-                {
-                    StartUp();
-                }
+                LoadRomInCradle(openFileDialog1.FileName);
             }
         }
 
@@ -379,11 +200,11 @@ namespace Cradle
             {
                 int currentoffset = 0;
 
-                foreach (ushort ID in IDsAndRooms.Keys)
+                foreach (ushort ID in Dictionaries.IDsAndRooms.Keys)
                 {
-                    currentoffset = (int)IDsAndRooms[ID].objectListOffset;
+                    currentoffset = (int)Dictionaries.IDsAndRooms[ID].objectListOffset;
 
-                    foreach (Object o in IDsAndRooms[ID].objects)
+                    foreach (Object o in Dictionaries.IDsAndRooms[ID].objects)
                     {
                         WriteUInt16(rom.filebytes, currentoffset, o.Ypos);
                         currentoffset += 2;
@@ -407,7 +228,7 @@ namespace Cradle
 
                 }
 
-                if (isTranslatedVersion)
+                if (rom.isTranslatedVersion)
                 {
                     for (int i = 0; i < Dictionaries.DialogueIDAndDialogue.Keys.Count; i++)
                     {
@@ -452,7 +273,7 @@ namespace Cradle
 
             int currentoffset = 0;
 
-            if (isTranslatedVersion)
+            if (rom.isTranslatedVersion)
             {
                 currentoffset = 0x301000;
             }
@@ -475,7 +296,7 @@ namespace Cradle
 
             for (int i = 0; i < 0x200; i++)
             {
-                if (isTranslatedVersion)
+                if (rom.isTranslatedVersion)
                 {
                     currentoffset = 0x301000 + Dictionaries.DialogueIDAndDialogue[i].offset;
                 }
@@ -947,42 +768,42 @@ namespace Cradle
 
         private void ObjectXPos_box_ValueChanged(object sender, EventArgs e)
         {
-            CurrentRoom.objects[(int)numericUpDown1.Value].Xpos = (ushort)ObjectXPos_box.Value;
+            rom.CurrentRoom.objects[(int)numericUpDown1.Value].Xpos = (ushort)ObjectXPos_box.Value;
         }
 
         private void ObjectYPos_box_ValueChanged(object sender, EventArgs e)
         {
-            CurrentRoom.objects[(int)numericUpDown1.Value].Ypos = (ushort)ObjectYPos_box.Value;
+            rom.CurrentRoom.objects[(int)numericUpDown1.Value].Ypos = (ushort)ObjectYPos_box.Value;
         }
 
         private void ObjectUnk1_box_ValueChanged(object sender, EventArgs e)
         {
-            CurrentRoom.objects[(int)numericUpDown1.Value].unk1 = (ushort)ObjectUnk1_box.Value;
+            rom.CurrentRoom.objects[(int)numericUpDown1.Value].unk1 = (ushort)ObjectUnk1_box.Value;
         }
 
         private void ObjectCursorOffsetX_box_ValueChanged(object sender, EventArgs e)
         {
-            CurrentRoom.objects[(int)numericUpDown1.Value].cursorXPosOffset = (ushort)ObjectCursorOffsetX_box.Value;
+            rom.CurrentRoom.objects[(int)numericUpDown1.Value].cursorXPosOffset = (ushort)ObjectCursorOffsetX_box.Value;
         }
 
         private void ObjectCursorOffsetY_box_ValueChanged(object sender, EventArgs e)
         {
-            CurrentRoom.objects[(int)numericUpDown1.Value].cursorYPosOffset = (ushort)ObjectCursorOffsetY_box.Value;
+            rom.CurrentRoom.objects[(int)numericUpDown1.Value].cursorYPosOffset = (ushort)ObjectCursorOffsetY_box.Value;
         }
 
         private void ObjectUnk2_box_ValueChanged(object sender, EventArgs e)
         {
-            CurrentRoom.objects[(int)numericUpDown1.Value].unk2 = (ushort)ObjectUnk2_box.Value;
+            rom.CurrentRoom.objects[(int)numericUpDown1.Value].unk2 = (ushort)ObjectUnk2_box.Value;
         }
 
         private void ObjectPlayerPosX_box_ValueChanged(object sender, EventArgs e)
         {
-            CurrentRoom.objects[(int)numericUpDown1.Value].playerXPos = (ushort)ObjectPlayerPosX_box.Value;
+            rom.CurrentRoom.objects[(int)numericUpDown1.Value].playerXPos = (ushort)ObjectPlayerPosX_box.Value;
         }
 
         private void ObjectPlayerPosY_box_ValueChanged(object sender, EventArgs e)
         {
-            CurrentRoom.objects[(int)numericUpDown1.Value].playerYPos = (ushort)ObjectPlayerPosY_box.Value;
+            rom.CurrentRoom.objects[(int)numericUpDown1.Value].playerYPos = (ushort)ObjectPlayerPosY_box.Value;
         }
 
         private void saveRomToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1000,7 +821,7 @@ namespace Cradle
         {
             RomInfo rominfo = new RomInfo();
             rominfo.Show();
-            if (isTranslatedVersion)
+            if (rom.isTranslatedVersion)
             {
                 rominfo.aeonYesNo.Text = "Translation patch detected.";
             }

@@ -36,7 +36,7 @@ namespace Cradle
         public void DisplayText() {
             numericUpDown1.Maximum = Dictionaries.DialogueIDAndDialogue.Keys.Count - 1;
             TextBox.Text = Dictionaries.DialogueIDAndDialogue[form1.currentlySelectedDialogue].text;
-            if (form1.isTranslatedVersion)
+            if (rom.isTranslatedVersion)
             {
                 textOffsetLabel.Text = "Offset: " + (0x301000 + Dictionaries.DialogueIDAndDialogue[form1.currentlySelectedDialogue].offset);
             }

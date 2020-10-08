@@ -1,15 +1,12 @@
 === CRADLE ===
 
+"Heh heh... Right now... it's watching you...
+Watching you... cradle under the star..."
+
 Work in progress file viewer for Clock Tower (SNES).
 
 
-[This is a project I started a long time ago, and has only recently been resurrected.
-Elements are still in the process of being ported from another platform (namely, Unity).
-Some features may therefore not work as intended.]
-
-
-
-Current features:
+=== Current features ===
 
 Decompresses room graphics and displays them. (However, some rooms will cause an exception, and some others will not display properly.)
 Allows you to view information about the object in a room.

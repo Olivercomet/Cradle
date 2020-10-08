@@ -20,6 +20,8 @@ namespace Cradle
 
         public static Dictionary<int, int> RoomIndexAndOffset = new Dictionary<int, int>();
 
+        public static Dictionary<ushort, room> IDsAndRooms = new Dictionary<ushort, room>();
+
 
         public static Dictionary<int, Dialogue> DialogueIDAndDialogue = new Dictionary<int, Dialogue>();
 

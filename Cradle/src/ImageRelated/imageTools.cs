@@ -86,8 +86,6 @@ namespace Cradle
 
 
 
-
-
 		public static Bitmap GetTileRaw(Byte[] input, int TileID, Palette palette)
 		{   //get the 8x8 tile that begins at this offset in the byte array. THIS IS FOR BACKGROUNDS ETC, NOT SPRITES
 
@@ -320,5 +318,33 @@ namespace Cradle
 					}
 				}
 			}
+
+
+
+		public static byte[] BackgroundToIntermediateFormat(room r)	//not dead code!
+		{
+
+			byte[] output = new byte[r.background.Width * r.background.Height * 4];
+
+			int pos = 0;
+
+			for (int y = 0; y < r.background.Height; y++)
+			{
+				for (int x = 0; x < r.background.Width; x++)
+				{
+					output[pos] = r.background.GetPixel(x, y).R;
+					pos++;
+					output[pos] = r.background.GetPixel(x, y).G;
+					pos++;
+					output[pos] = r.background.GetPixel(x, y).B;
+					pos++;
+					output[pos] = r.background.GetPixel(x, y).A;
+					pos++;
+				}
+			}
+
+			return output;
+		}
+
 	}
 }
