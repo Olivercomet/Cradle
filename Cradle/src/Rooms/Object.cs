@@ -52,10 +52,14 @@ namespace Cradle
 
 		public List<AnimFrame> animationFrames = new List<AnimFrame>();
 
-		public string SpecialSprite = ""; //scissorman, jennifer - will make it take the palette from the correct room index
+		public SpecialSpriteType SpecialSprite = SpecialSpriteType.None; //scissorman, jennifer - will make it take the palette from the correct room index
 
 
-
+		public enum SpecialSpriteType { 
+		None = 0x00,
+		Jennifer = 0x01,
+		Scissorman = 0x02
+		}
 
 		public void LoadAnimation(int animationIndex, bool loop)
 		{
@@ -74,10 +78,10 @@ namespace Cradle
 
 			switch (SpecialSprite)
 			{
-				case "scissorman":
+				case Object.SpecialSpriteType.Scissorman:
 					palette = parentRoom.foreground_palettes[6];
 					break;
-				case "jennifer":
+				case Object.SpecialSpriteType.Jennifer:
 					palette = parentRoom.foreground_palettes[7];
 					break;
 			}

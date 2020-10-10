@@ -65,7 +65,7 @@ namespace Cradle
             {
                 utility.LoadRoom(index);
                 MessageBox.Show("specialsprite and animation were temporarily set to scissorman!");
-                rom.CurrentRoom.objects[0].SpecialSprite = "scissorman";    //TEMP
+                rom.CurrentRoom.objects[0].SpecialSprite = Object.SpecialSpriteType.Scissorman;    //TEMP
                 rom.CurrentRoom.objects[0].LoadAnimation(0x70, false);      //TEMP
             }
         }
