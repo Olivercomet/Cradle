@@ -321,7 +321,7 @@ namespace Cradle
 
 
 
-		public static byte[] BackgroundToIntermediateFormat(room r)	//not dead code!
+		public static byte[] BackgroundToIntermediateFormat(room r)	//not dead code! This is used by external projects to get an RGBA32 image byte array instead of a Bitmap (in case they can't use System.Drawing)
 		{
 
 			byte[] output = new byte[r.background.Width * r.background.Height * 4];
@@ -345,6 +345,5 @@ namespace Cradle
 
 			return output;
 		}
-
 	}
 }

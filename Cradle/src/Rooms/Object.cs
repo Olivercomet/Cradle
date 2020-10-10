@@ -269,7 +269,7 @@ namespace Cradle
 					}
 				}
 
-			spriteImage.Save("test.png");
+			spriteImage.Save("test.png"); //TEMP
 		}
 
 
