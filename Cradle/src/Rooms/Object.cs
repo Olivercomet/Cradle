@@ -27,6 +27,8 @@ namespace Cradle
 		public InteractionScript script;
 
 		public Bitmap spriteImage;
+		public int width_in_pixels;
+		public int height_in_pixels;
 
 		Palette palette = new Palette();
 
@@ -41,10 +43,10 @@ namespace Cradle
 
 		public int currentAnimationIndex = 999999; //index of the animation currently playing
 
-		int currentAnimRandomID = 0;
+		public int currentAnimRandomID = 0;
 
-		int NextAnimationIndex = 999999;
-		bool NextAnimationLoop = false;
+		public int NextAnimationIndex = 999999;
+		public bool NextAnimationLoop = false;
 
 		public bool cooldown = false;
 
@@ -156,8 +158,6 @@ namespace Cradle
 
 
 			Console.WriteLine("framecount in this animation: " + animationFrames.Count);
-
-			PlayLoadedAnimation(animationIndex, loop);
 		}
 
 
@@ -256,7 +256,10 @@ namespace Cradle
 					}
 				}
 
-			spriteImage = new Bitmap(Math.Abs(maxX - minX) + 16, Math.Abs(maxY - minY) + 16);
+			width_in_pixels = Math.Abs(maxX - minX) + 16;
+			height_in_pixels = Math.Abs(maxY - minY) + 16;
+
+			spriteImage = new Bitmap(width_in_pixels, height_in_pixels);
 
 			foreach (TileInfo t in tileInfos)
 				{
@@ -269,81 +272,7 @@ namespace Cradle
 					}
 				}
 
-			spriteImage.Save("test.png"); //TEMP
+			//spriteImage.Save("test.png"); //TEMP
 		}
-
-
-		public void PlayLoadedAnimation(int animationIndex, bool loop)
-		{
-			Random rnd = new Random();
-			int thisAnimRandomID = rnd.Next(0, 9999999);
-			currentAnimRandomID = thisAnimRandomID;
-
-
-			//remember that the animation must have been LOADED with LoadAnimation() before using this!
-
-			for (int i = 0; i < animationFrames.Count; i++)
-			{
-				if (currentAnimRandomID != thisAnimRandomID)    //if this animation is no longer the current animation for this object, stop
-				{
-				//	yield break;
-				}
-
-				Console.WriteLine("anim frame :" + i);
-
-				DisplaySprite(animationFrames[i].SpriteID, i);
-
-
-
-				//change sprite flipping
-
-				if ((animationFrames[i].flags & 0x80) == 0x80)
-				{
-				//flip y
-				}
-
-				if ((animationFrames[i].flags & 0x40) == 0x40 && !(currentAnimationIndex == 0x05))
-				{
-				//flip x
-				}
-
-				//change sprite location
-
-				/*
-				if (this.transform.localScale.x < 0)
-				{
-					this.transform.Translate(new Vector3(-animationFrames[i].XPositionChange / 4.0f, -animationFrames[i].YPositionChange / 4.0f, 0));
-				}
-				else
-				{
-					this.transform.Translate(new Vector3(animationFrames[i].XPositionChange / 4.0f, -animationFrames[i].YPositionChange / 4.0f, 0));
-				}*/
-
-
-
-				//yield return new WaitForSeconds(((float)animationFrames[i].duration) / 60.000f);
-
-			}
-
-			if (currentAnimRandomID == thisAnimRandomID && loop && animationFrames.Count > 1)
-			{
-				//StartCoroutine(PlayLoadedAnimation(animationIndex, loop));  //loop
-			}
-			else if (animationFrames.Count > 1)
-			{
-				currentAnimationIndex = 999999;
-				cooldown = false;
-
-				if (NextAnimationIndex != 999999)
-				{
-					int temp1 = NextAnimationIndex; //this weirdness is done because the NextAnimationIndex needs to be reset before the function is called
-					NextAnimationIndex = 999999;
-
-					LoadAnimation(temp1, NextAnimationLoop);
-				}
-			}
-		}
-
-
 	}
 }

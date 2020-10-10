@@ -42,6 +42,7 @@ namespace Cradle
             rom.isStandaloneCradle = true;
 
             rom.form1 = this;
+
         }
 
 

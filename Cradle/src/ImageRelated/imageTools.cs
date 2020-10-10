@@ -323,7 +323,6 @@ namespace Cradle
 
 		public static byte[] BackgroundToIntermediateFormat(room r)	//not dead code! This is used by external projects to get an RGBA32 image byte array instead of a Bitmap (in case they can't use System.Drawing)
 		{
-
 			byte[] output = new byte[r.background.Width * r.background.Height * 4];
 
 			int pos = 0;
@@ -339,6 +338,30 @@ namespace Cradle
 					output[pos] = r.background.GetPixel(x, y).B;
 					pos++;
 					output[pos] = r.background.GetPixel(x, y).A;
+					pos++;
+				}
+			}
+
+			return output;
+		}
+
+		public static byte[] SpriteToIntermediateFormat(Object o) //not dead code! This is used by external projects to get an RGBA32 image byte array instead of a Bitmap (in case they can't use System.Drawing)
+		{
+			byte[] output = new byte[o.spriteImage.Width * o.spriteImage.Height * 4];
+
+			int pos = 0;
+
+			for (int y = 0; y < o.spriteImage.Height; y++)
+			{
+				for (int x = 0; x < o.spriteImage.Width; x++)
+				{
+					output[pos] = o.spriteImage.GetPixel(x, y).R;
+					pos++;
+					output[pos] = o.spriteImage.GetPixel(x, y).G;
+					pos++;
+					output[pos] = o.spriteImage.GetPixel(x, y).B;
+					pos++;
+					output[pos] = o.spriteImage.GetPixel(x, y).A;
 					pos++;
 				}
 			}
