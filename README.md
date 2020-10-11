@@ -9,7 +9,7 @@ Work in progress file utilities for Clock Tower (SNES).
 ### Current features
 
 - Decompresses room graphics and displays them.
-- Allows you to view information about the object in a room.
+- Allows you to view information about the objects in a room.
 - Compatible with translated roms (Aeon Genesis etc.)
 - Dialogue viewer.
 - Rando tracker.
