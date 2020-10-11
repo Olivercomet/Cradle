@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Cradle
 {
-    public static class Decompressor
+	public static class Decompressor
 	{
 
 

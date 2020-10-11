@@ -96,6 +96,9 @@ namespace Cradle
 
                 newRoom.foreground_palettes = new Palette[8];
 
+                newRoom.foreground_palettes[0] = new Palette(); //idk how this one should be written. it seemingly doesn't have an entry here
+
+                //now for the actual entries
                 newRoom.foreground_palettes[1] = imageTools.GetPaletteWithIndex(rom.filebytes, rom.filebytes[currentOffset]);
                 currentOffset++;
 

@@ -9,23 +9,18 @@ namespace Cradle
 {
     public static class imageTools
     {
-
-
-
-		public static Palette GetPaletteAtOffset(Byte[] input, int offset, bool is_background)
+		public static Palette GetPaletteAtOffset(byte[] input, int offset, bool is_background)
 		{
-
 			Palette output = new Palette();
 			output.colors = new Color[16];
 
 
 			for (int i = 1; i < 16; i++)
 			{
-				int r = (((input[offset] & 0x1F) << 3)); /// 248.00f;
+				int r = (((input[offset] & 0x1F) << 3));
 				int g = (input[offset] & 0xE0) >> 2;
 				g += (input[offset + 1] & 0x03) << 6;
-				//g = ((float)g); /// 248.00f;
-				int b = ((input[offset + 1] & 0x7C) << 1);   /// 248.00f);
+				int b = ((input[offset + 1] & 0x7C) << 1);
 				offset += 2;
 
 				if (is_background)

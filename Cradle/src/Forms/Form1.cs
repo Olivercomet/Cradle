@@ -54,7 +54,6 @@ namespace Cradle
 
             ENUM_TEMPLATE += "}";
             File.WriteAllText("ENUM_TEMPLATE.txt", ENUM_TEMPLATE);*/
-
         }
      
         

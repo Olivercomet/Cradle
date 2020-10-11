@@ -127,18 +127,12 @@ namespace Cradle
                 background_palettes = new Palette[8];
                 background_palettes[0] = rom.BGPalette0;
 
-                index = index << 3;
-
-                index += BitConverter.ToUInt16(rom.filebytes, 0x20000);
-
-                currentOffset = utility.ConvertToPCOffset((uint)(0xEF0000 + index));
+                byte[] paletteBytes = Decompressor.Decompress(index).ToArray();
 
                 //this brings us to the address for a block of palettes to load into the background. Note that there is actually a value here that seems to be *how long* the block is (usually E0, for writing 7 of the eight palettes). But some of these are bigger than the 8 palettes for the BG. How can this be? Do they write to the sprite palette too?
 
-                Console.WriteLine("Palette block info is at " + currentOffset);
-
-                int lengthOfBlock = BitConverter.ToUInt16(rom.filebytes, (int)(currentOffset + 3)); //usually 0x00E0
-                currentOffset = (uint)utility.GetPCOffset(rom.filebytes, (int)currentOffset);
+                int lengthOfBlock = paletteBytes.Length;
+                currentOffset = 0;
 
                 Console.WriteLine("Loading palette block at address " + currentOffset);
 
@@ -146,16 +140,17 @@ namespace Cradle
                 {
                     if (lengthOfBlock <= 0xE0)  //7 palettes, so just write to the ones after the global palette
                     {
-                        background_palettes[i + 1] = imageTools.GetPaletteAtOffset(rom.filebytes, (int)currentOffset, true);
+                        background_palettes[i + 1] = imageTools.GetPaletteAtOffset(paletteBytes, (int)currentOffset, true);
                         currentOffset += 0x20;
                     }
                     else if (lengthOfBlock <= 0x100)    //8 palettes, so assume we're meant to write to the global palette too.
                     {
-                        background_palettes[i] = imageTools.GetPaletteAtOffset(rom.filebytes, (int)currentOffset, true);
+                        background_palettes[i] = imageTools.GetPaletteAtOffset(paletteBytes, (int)currentOffset, true);
                         currentOffset += 0x20;
                     }
                     else
                     {
+                        System.Windows.Forms.MessageBox.Show("Large palette! maybe it's supposed to write to the sprite palettes too?");
                         Console.WriteLine("Wtf? The palette block is bigger than the background palette count. Maybe it's meant to write to the sprite palettes, too?");
                     }
                 }
@@ -227,13 +222,13 @@ namespace Cradle
                         {
                         palette = background_palettes[PaletteID];   //load from background palettes
                         }
-                    else if ((PaletteID - 8) < foreground_palettes.Length)
+                    else if ((PaletteID - 8) < background_palettes.Length)  //sometimes it's beyond 7, just move it back into the 0 to 7 range and it works
                         {
-                        palette = foreground_palettes[PaletteID - 8];   //load from foreground palettes
+                        palette = background_palettes[PaletteID - 8];
                         }
                     else
                         {
-                        Console.WriteLine("Could not locate palette in background palettes or foreground palettes. Probable cause is that foreground palettes are not yet implemented?");
+                        Console.WriteLine("Could not locate palette in background palettes.");
                         }
 					
 
