@@ -38,7 +38,7 @@ namespace Cradle
 			public int duration;
 			public sbyte XPositionChange;
 			public sbyte YPositionChange;
-			public Byte flags;
+			public byte flags;
 		}
 
 		public int currentAnimationIndex = 999999; //index of the animation currently playing
@@ -61,6 +61,13 @@ namespace Cradle
 		Scissorman = 0x02
 		}
 
+		public void SetNextAnimation(int newNextAnimationIndex, bool newNextAnimationLoop)
+		{
+			NextAnimationIndex = newNextAnimationIndex;
+			NextAnimationLoop = newNextAnimationLoop;
+		}
+
+
 		public void LoadAnimation(int animationIndex, bool loop)
 		{
 			int currentOffset = 0;
@@ -70,18 +77,20 @@ namespace Cradle
 				return;
 			}
 
+			
 			if (NextAnimationIndex == animationIndex)
 			{
 				return;
 			}
 
 
-			switch (SpecialSprite)
+
+			switch (SpecialSprite)	
 			{
-				case Object.SpecialSpriteType.Scissorman:
+				case SpecialSpriteType.Scissorman:
 					palette = parentRoom.foreground_palettes[6];
 					break;
-				case Object.SpecialSpriteType.Jennifer:
+				case SpecialSpriteType.Jennifer:
 					palette = parentRoom.foreground_palettes[7];
 					break;
 			}

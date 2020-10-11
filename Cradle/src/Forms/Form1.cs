@@ -43,11 +43,19 @@ namespace Cradle
 
             rom.form1 = this;
 
+            /*
+            string ENUM_TEMPLATE = "public enum ENUMNAME {\n";
+            int enum_count = 10000;
+
+            for (int i = 0; i < enum_count; i++)
+                {
+                ENUM_TEMPLATE += "NAME = "+i+",\n";
+                }
+
+            ENUM_TEMPLATE += "}";
+            File.WriteAllText("ENUM_TEMPLATE.txt", ENUM_TEMPLATE);*/
+
         }
-
-
-       
-
      
         
 
