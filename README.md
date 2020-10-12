@@ -15,4 +15,4 @@ Work in progress file utilities for Clock Tower (SNES).
 - Rando tracker.
 
 
-With thanks to MegamanEXE95 on TCRF, for his invaluable mapping out of large sections of the rom and documenting the sprite/animation formats.
+With thanks to MegamanEXE95 on TCRF, for their invaluable mapping out of large sections of the rom and documenting the sprite/animation formats.

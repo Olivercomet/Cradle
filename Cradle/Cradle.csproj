@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{7B4A32D3-8AD9-4DA2-82AF-146DEF28A8F8}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>Cradle</RootNamespace>
     <AssemblyName>Cradle</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -101,6 +101,7 @@
     <Compile Include="src\Forms\TextEditor.Designer.cs">
       <DependentUpon>TextEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\Utility\text.cs" />
     <Compile Include="src\Utility\utility.cs" />
     <EmbeddedResource Include="src\Forms\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

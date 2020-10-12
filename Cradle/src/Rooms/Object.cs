@@ -192,11 +192,11 @@ namespace Cradle
 
 			int currentOffset = 0x220000 + (spriteIndex * 2);
 
-			if (spriteIndex > 0x2311)
+			if (spriteIndex >= 0x1189)
 			{
 				currentOffset = 0x240000 + BitConverter.ToUInt16(rom.filebytes, currentOffset);
 			}
-			else if (spriteIndex > 0x0F61)
+			else if (spriteIndex >= 0x07B1)
 			{
 				currentOffset = 0x230000 + BitConverter.ToUInt16(rom.filebytes, currentOffset);
 			}
