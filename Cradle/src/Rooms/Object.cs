@@ -1,291 +1,340 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cradle
 {
-	public class Object
-	{
-		public int offset;
+    public class Object
+    {
+        public int offset;
 
-		public room parentRoom;
+        public room parentRoom;
 
-		public ushort unk1;
+        public ushort unk1;
 
-		public ushort Xpos;
-		public ushort Ypos;
-		public ushort cursorXPosOffset;
-		public ushort cursorYPosOffset;
-		public ushort unk2;
-		public uint offsetOfInteractionScript;
-		public ushort playerXPos;
-		public ushort playerYPos;
+        public ushort Xpos;
+        public ushort Ypos;
+        public ushort cursorXPosOffset;
+        public ushort cursorYPosOffset;
+        public ushort unk2;
+        public uint offsetOfInteractionScript;
+        public ushort playerXPos;
+        public ushort playerYPos;
 
-		public InteractionScript script;
+        public InteractionScript script;
 
-		public Bitmap spriteImage;
-		public int width_in_pixels;
-		public int height_in_pixels;
+        public Bitmap spriteImage;
+        public int width_in_pixels;
+        public int height_in_pixels;
 
-		Palette palette = new Palette();
+        public int width_in_pixels_without_shadow;
+        public int height_in_pixels_without_shadow;
 
-		public class AnimFrame
-		{
-			public int SpriteID;
-			public int duration;
-			public sbyte XPositionChange;
-			public sbyte YPositionChange;
-			public byte flags;
-		}
+        Palette palette = new Palette();
 
-		public int currentAnimationIndex = 999999; //index of the animation currently playing
+        public sbyte centreChangeForThisFrameX = 0;
+        public sbyte centreChangeForThisFrameY = 0;
 
-		public int currentAnimRandomID = 0;
+        public class AnimFrame
+        {
+            public int SpriteID;
+            public int duration;
+            public sbyte XPositionChange;
+            public sbyte YPositionChange;
+            public byte flags;
 
-		public int NextAnimationIndex = 999999;
-		public bool NextAnimationLoop = false;
+            public sbyte midpointX;
+            public sbyte midpointY;
+        }
 
-		public bool cooldown = false;
+        public int currentAnimationIndex = 999999; //index of the animation currently playing
 
-		public List<AnimFrame> animationFrames = new List<AnimFrame>();
+        public int currentAnimRandomID = 0;
 
-		public SpecialSpriteType SpecialSprite = SpecialSpriteType.None; //scissorman, jennifer - will make it take the palette from the correct room index
+        public int NextAnimationIndex = 999999;
+        public bool NextAnimationLoop = false;
 
+        public bool cooldown = false;
 
-		public enum SpecialSpriteType { 
-		None = 0x00,
-		Jennifer = 0x01,
-		Scissorman = 0x02
-		}
+        public List<AnimFrame> animationFrames = new List<AnimFrame>();
 
-		public void SetNextAnimation(int newNextAnimationIndex, bool newNextAnimationLoop)
-		{
-			NextAnimationIndex = newNextAnimationIndex;
-			NextAnimationLoop = newNextAnimationLoop;
-		}
+        public SpecialSpriteType SpecialSprite = SpecialSpriteType.None; //scissorman, jennifer - will make it take the palette from the correct room index
 
 
-		public void LoadAnimation(int animationIndex, bool loop)
-		{
-			int currentOffset = 0;
+        public enum SpecialSpriteType
+        {
+            None = 0x00,
+            Jennifer = 0x01,
+            Scissorman = 0x02
+        }
 
-			if (currentAnimationIndex == animationIndex)
-			{
-				return;
-			}
+        public void SetNextAnimation(int newNextAnimationIndex, bool newNextAnimationLoop)
+        {
+            NextAnimationIndex = newNextAnimationIndex;
+            NextAnimationLoop = newNextAnimationLoop;
+        }
 
-			
-			if (NextAnimationIndex == animationIndex)
-			{
-				return;
-			}
 
+        public void LoadAnimation(int animationIndex, bool loop)
+        {
+            int currentOffset = 0;
 
+            if (currentAnimationIndex == animationIndex)
+            {
+                return;
+            }
 
-			switch (SpecialSprite)	
-			{
-				case SpecialSpriteType.Scissorman:
-					palette = parentRoom.foreground_palettes[6];
-					break;
-				case SpecialSpriteType.Jennifer:
-					palette = parentRoom.foreground_palettes[7];
-					break;
-			}
 
-			currentAnimationIndex = animationIndex;
+            if (NextAnimationIndex == animationIndex)
+            {
+                return;
+            }
 
-			currentAnimRandomID = 0;
 
-			currentOffset = 0x030000 + (animationIndex * 2);
 
-			if (animationIndex > 0x024D)
-			{
-				currentOffset = 0x031000 + BitConverter.ToUInt16(rom.filebytes, currentOffset);
-			}
-			else
-			{
-				currentOffset = 0x030000 + BitConverter.ToUInt16(rom.filebytes, currentOffset);
-			}
+            switch (SpecialSprite)
+            {
+                case SpecialSpriteType.Scissorman:
+                    palette = parentRoom.foreground_palettes[6];
+                    break;
+                case SpecialSpriteType.Jennifer:
+                    palette = parentRoom.foreground_palettes[7];
+                    break;
+            }
 
-			animationFrames = new List<AnimFrame>();
+            currentAnimationIndex = animationIndex;
 
+            currentAnimRandomID = 0;
 
-			while (BitConverter.ToUInt16(rom.filebytes, currentOffset) != 0xFFFF)
-			{
-				AnimFrame newAnimFrame = new AnimFrame();
+            currentOffset = 0x030000 + (animationIndex * 2);
 
-				newAnimFrame.SpriteID = BitConverter.ToUInt16(rom.filebytes, currentOffset);
-				currentOffset += 0x02;
+            if (animationIndex > 0x024D)
+            {
+                currentOffset = 0x031000 + BitConverter.ToUInt16(rom.filebytes, currentOffset);
+            }
+            else
+            {
+                currentOffset = 0x030000 + BitConverter.ToUInt16(rom.filebytes, currentOffset);
+            }
 
-				newAnimFrame.duration = rom.filebytes[currentOffset];
-				currentOffset++;
+            animationFrames = new List<AnimFrame>();
 
-				newAnimFrame.XPositionChange = (sbyte)rom.filebytes[currentOffset];
-				currentOffset++;
 
-				newAnimFrame.YPositionChange = (sbyte)rom.filebytes[currentOffset];
-				currentOffset++;
+            while (BitConverter.ToUInt16(rom.filebytes, currentOffset) != 0xFFFF)
+            {
+                AnimFrame newAnimFrame = new AnimFrame();
 
-				Console.WriteLine("flags for this frame: " + rom.filebytes[currentOffset]);
-				newAnimFrame.flags = rom.filebytes[currentOffset];
-				currentOffset++;
+                newAnimFrame.SpriteID = BitConverter.ToUInt16(rom.filebytes, currentOffset);
+                currentOffset += 0x02;
 
+                newAnimFrame.duration = rom.filebytes[currentOffset];
+                currentOffset++;
 
+                newAnimFrame.XPositionChange = (sbyte)rom.filebytes[currentOffset];
+                currentOffset++;
 
-				//flag information:
+                newAnimFrame.YPositionChange = (sbyte)rom.filebytes[currentOffset];
+                currentOffset++;
 
-				//the first bit is whether or not to flip vertically on this anim frame
-				//the second bit is whether or not to flip horizontally on this anim frame
-				//the third bit in the flag is ???
-				//the fourth bit in the flag is the layer the sprite is on
+                Console.WriteLine("flags for this frame: " + rom.filebytes[currentOffset]);
+                newAnimFrame.flags = rom.filebytes[currentOffset];
+                currentOffset++;
 
-				//the fifth, sixth and seventh bits in the flag are palette related
 
-				//it seems to be an index to one of the currently loaded palettes in SNES memory... They are viewable in No$sns. They are loaded in when the room is loaded, and are located in the bytes just prior to the room address
 
-				//THE FOLLOWING BIT ABOUT PALETTE WILL PROBABLY NEED TO BE REDONE - I THINK IT TAKES THE PALETTE INDEX FROM THE OBJECT DEFINITION RATHER THAN THE ANIMATION 
+                //flag information:
 
-				//newAnimFrame.palette = parentRoom.foreground_palettes[(newAnimFrame.flags & 0x0F) + 2];
-				//Console.WriteLine("request room palette with index "+ ((newAnimFrame.flags & 0x0F) + 2));
-				//Console.WriteLine(newAnimFrame.palette.colors[1].r);
-				//newAnimFrame.palette.colors = RomLoader.LoadPalette(rom.filebytes, 0x1E77C + (newAnimFrame.flags * 30));	//wrong
-				//Console.WriteLine("loaded palette from offset "+ (0x1E77C + (newAnimFrame.flags * 30)));		//wrong
+                //the first bit is whether or not to flip vertically on this anim frame
+                //the second bit is whether or not to flip horizontally on this anim frame
+                //the third bit in the flag is ???
+                //the fourth bit in the flag is the layer the sprite is on
 
-				if (newAnimFrame.SpriteID < 0x02 && animationFrames.Count > 0)  //replacing those weird sprites that cut back to early ones (may need to increase this threshold)
-				{
-					//	newAnimFrame.SpriteID = animationFrames[animationFrames.Count-1].SpriteID;
-					//	newAnimFrame.XPositionChange = animationFrames[animationFrames.Count-1].XPositionChange;
-					//	newAnimFrame.YPositionChange = animationFrames[animationFrames.Count-1].YPositionChange;
-					//newAnimFrame.duration = animationFrames[animationFrames.Count-1].duration;
-				}
-				else
-				{
-					animationFrames.Add(newAnimFrame);
-				}
+                //the fifth, sixth and seventh bits in the flag are palette related
 
-				Console.WriteLine("SpriteID: " + newAnimFrame.SpriteID);
-			}
+                //it seems to be an index to one of the currently loaded palettes in SNES memory... They are viewable in No$sns. They are loaded in when the room is loaded, and are located in the bytes just prior to the room address
 
+                //THE FOLLOWING BIT ABOUT PALETTE WILL PROBABLY NEED TO BE REDONE - I THINK IT TAKES THE PALETTE INDEX FROM THE OBJECT DEFINITION RATHER THAN THE ANIMATION 
 
-			Console.WriteLine("framecount in this animation: " + animationFrames.Count);
-		}
+                //newAnimFrame.palette = parentRoom.foreground_palettes[(newAnimFrame.flags & 0x0F) + 2];
+                //Console.WriteLine("request room palette with index "+ ((newAnimFrame.flags & 0x0F) + 2));
+                //Console.WriteLine(newAnimFrame.palette.colors[1].r);
+                //newAnimFrame.palette.colors = RomLoader.LoadPalette(rom.filebytes, 0x1E77C + (newAnimFrame.flags * 30));	//wrong
+                //Console.WriteLine("loaded palette from offset "+ (0x1E77C + (newAnimFrame.flags * 30)));		//wrong
 
+                if (newAnimFrame.SpriteID < 0x02 && animationFrames.Count > 0)  //replacing those weird sprites that cut back to early ones (may need to increase this threshold)
+                {
+                    //	newAnimFrame.SpriteID = animationFrames[animationFrames.Count-1].SpriteID;
+                    //	newAnimFrame.XPositionChange = animationFrames[animationFrames.Count-1].XPositionChange;
+                    //	newAnimFrame.YPositionChange = animationFrames[animationFrames.Count-1].YPositionChange;
+                    //newAnimFrame.duration = animationFrames[animationFrames.Count-1].duration;
+                }
+                else
+                {
+                    animationFrames.Add(newAnimFrame);
+                }
 
-		public class TileInfo {
-			public Bitmap image;
-			public byte TileFlags;
-			public int TileID;
-			public sbyte TileXPos;
-			public sbyte TileYPos;
-		}
+                Console.WriteLine("SpriteID: " + newAnimFrame.SpriteID);
+            }
 
 
-		public void DisplaySprite(int spriteIndex, int extraInfo)
-		{   //display a sprite on this object
+            Console.WriteLine("framecount in this animation: " + animationFrames.Count);
+        }
 
-			List<TileInfo> tileInfo = new List<TileInfo>();
 
-			//go the the list of sprites and find this one
+        public class TileInfo
+        {
+            public Bitmap image;
+            public byte TileFlags;
+            public int TileID;
+            public sbyte TileXPos;
+            public sbyte TileYPos;
+        }
 
-			int currentOffset = 0x220000 + (spriteIndex * 2);
 
-			if (spriteIndex >= 0x1189)
-			{
-				currentOffset = 0x240000 + BitConverter.ToUInt16(rom.filebytes, currentOffset);
-			}
-			else if (spriteIndex >= 0x07B1)
-			{
-				currentOffset = 0x230000 + BitConverter.ToUInt16(rom.filebytes, currentOffset);
-			}
-			else
-			{
-				currentOffset = 0x220000 + BitConverter.ToUInt16(rom.filebytes, currentOffset);
-			}
+        public void DisplaySprite(int spriteIndex, int extraInfo)
+        {   //display a sprite on this object
 
-			List<TileInfo> tileInfos = new List<TileInfo>();
+            List<TileInfo> tileInfo = new List<TileInfo>();
 
-			while (BitConverter.ToUInt16(rom.filebytes, currentOffset) != 0xFFFF)  //read info for each tile until we hit 0XFFFF, which is the end of the sprite
-			{
-				TileInfo newTileInfo = new TileInfo();
+            //go the the list of sprites and find this one
 
-				newTileInfo.TileFlags = rom.filebytes[currentOffset];
-				currentOffset++;
+            int currentOffset = 0x220000 + (spriteIndex * 2);
 
-				int TileID = BitConverter.ToUInt16(rom.filebytes, currentOffset);
-				if (TileID >= 0xFFF0)
-				{
-					Console.WriteLine("VRAM shadow tile requested!");
-				}
-				currentOffset += 0x02;
-				newTileInfo.TileYPos = (sbyte)rom.filebytes[currentOffset];
-				currentOffset++;
-				newTileInfo.TileXPos = (sbyte)(rom.filebytes[currentOffset]);//); //it's +8 so that the tiles are spawned relative to the centre of the sprite... I hope
-				currentOffset++;
+            if (spriteIndex >= 0x1189)
+            {
+                currentOffset = 0x240000 + BitConverter.ToUInt16(rom.filebytes, currentOffset);
+            }
+            else if (spriteIndex >= 0x07B1)
+            {
+                currentOffset = 0x230000 + BitConverter.ToUInt16(rom.filebytes, currentOffset);
+            }
+            else
+            {
+                currentOffset = 0x220000 + BitConverter.ToUInt16(rom.filebytes, currentOffset);
+            }
 
+            sbyte AvgX = 0;
+            sbyte AvgY = 0;
 
-				//btw, the shader will need to use Cutout for the shadows to draw properly (and not just be shadows of the entire quad)
+            List<TileInfo> tileInfos = new List<TileInfo>();
 
+            while (BitConverter.ToUInt16(rom.filebytes, currentOffset) != 0xFFFF)  //read info for each tile until we hit 0XFFFF, which is the end of the sprite
+            {
+                TileInfo newTileInfo = new TileInfo();
 
-				//now zoom over to the tile section and get the tile data, then make that into a texture and put it on the sprite
+                newTileInfo.TileFlags = rom.filebytes[currentOffset];
+                currentOffset++;
 
+                int TileID = BitConverter.ToUInt16(rom.filebytes, currentOffset);
+                if (TileID >= 0xFFF0)
+                {
+                    Console.WriteLine("VRAM shadow tile requested!");
+                }
+                currentOffset += 0x02;
+                newTileInfo.TileYPos = (sbyte)rom.filebytes[currentOffset];
+                currentOffset++;
+                newTileInfo.TileXPos = (sbyte)(rom.filebytes[currentOffset]);//); //it's +8 so that the tiles are spawned relative to the centre of the sprite... I hope
+                currentOffset++;
 
-				if (TileID < 0xFFF0) //if not a VRAM shadow tile, load the tile. (Will need to add a special case for the shadow tiles though.)
-				{
-					newTileInfo.image = imageTools.GetTile(TileID, palette);
-				}
-
-				tileInfos.Add(newTileInfo);
-
-				//and the while loop will keep looping until 0xFFFF is found - i.e. the end of the sprite.
-			}
-
-			short minX = 0;
-			short maxX = 0;
-
-			short minY = 0;
-			short maxY = 0;
-
-			foreach(TileInfo t in tileInfos)
-				{
-				if (t.TileXPos > maxX)
-					{
-					maxX = t.TileXPos;
-					}
-				if (t.TileXPos < minX)
-					{
-					minX = t.TileXPos;
-					}
-
-				if (t.TileYPos > maxY)
-					{
-					maxY = t.TileYPos;
-					}
-				if (t.TileYPos < minY)
-					{
-					minY = t.TileYPos;
-					}
-				}
-
-			width_in_pixels = Math.Abs(maxX - minX) + 16;
-			height_in_pixels = Math.Abs(maxY - minY) + 16;
-
-			spriteImage = new Bitmap(width_in_pixels, height_in_pixels);
-
-			foreach (TileInfo t in tileInfos)
-				{
-				if (t.TileID < 0xFFF0)	//if not a VRAM shadow tile
-					{
-					if (t.image != null)
-						{
-						imageTools.WriteImageIntoBiggerImage(spriteImage, t.image, t.TileXPos + Math.Abs(minX), t.TileYPos + Math.Abs(minY), false, false);
-						}
-					}
-				}
-
-			//spriteImage.Save("test.png"); //TEMP
-		}
-	}
+                AvgX += (newTileInfo.TileXPos);
+                AvgY += (newTileInfo.TileYPos);
+
+                //btw, the shader will need to use Cutout for the shadows to draw properly (and not just be shadows of the entire quad)
+
+
+                //now zoom over to the tile section and get the tile data, then make that into a texture and put it on the sprite
+
+
+                if (TileID < 0xFFF0) //if not a VRAM shadow tile, load the tile. (Will need to add a special case for the shadow tiles though.)
+                {
+                    newTileInfo.image = imageTools.GetTile(TileID, palette);
+                }
+
+                tileInfos.Add(newTileInfo);
+
+                //and the while loop will keep looping until 0xFFFF is found - i.e. the end of the sprite.
+            }
+
+            short minX = 0;
+            short maxX = 0;
+
+            short minY = 0;
+            short maxY = 0;
+
+            short minXwithoutshadow = 0;
+            short maxXwithoutshadow = 0;
+
+            short minYwithoutshadow = 0;
+            short maxYwithoutshadow = 0;
+
+            foreach (TileInfo t in tileInfos)
+            {
+                if (t.TileXPos > maxX)
+                {
+                    maxX = t.TileXPos;
+                }
+                if (t.TileXPos < minX)
+                {
+                    minX = t.TileXPos;
+                }
+
+                if (t.TileYPos > maxY)
+                {
+                    maxY = t.TileYPos;
+                }
+                if (t.TileYPos < minY)
+                {
+                    minY = t.TileYPos;
+                }
+
+                if (t.TileID < 0xFFF0)
+                {
+                    if (t.TileXPos > maxXwithoutshadow)
+                    {
+                        maxXwithoutshadow = t.TileXPos;
+                    }
+                    if (t.TileXPos < minXwithoutshadow)
+                    {
+                        minXwithoutshadow = t.TileXPos;
+                    }
+
+                    if (t.TileYPos > maxYwithoutshadow)
+                    {
+                        maxYwithoutshadow = t.TileYPos;
+                    }
+                    if (t.TileYPos < minYwithoutshadow)
+                    {
+                        minYwithoutshadow = t.TileYPos;
+                    }
+                }
+            }
+
+            width_in_pixels = Math.Abs(maxX - minX) + 16;
+            height_in_pixels = Math.Abs(maxY - minY) + 16;
+
+            width_in_pixels_without_shadow = Math.Abs(maxXwithoutshadow - minXwithoutshadow) + 16;
+            height_in_pixels_without_shadow = Math.Abs(maxYwithoutshadow - minYwithoutshadow) + 16;
+
+            AvgX = (sbyte)(AvgX / tileInfos.Count);
+            AvgY = (sbyte)(AvgY / tileInfos.Count);
+
+            centreChangeForThisFrameX = (sbyte)-AvgX;
+            centreChangeForThisFrameY = (sbyte)-AvgY;
+
+            spriteImage = new Bitmap(width_in_pixels, height_in_pixels);
+
+            foreach (TileInfo t in tileInfos)
+            {
+                if (t.TileID < 0xFFF0)  //if not a VRAM shadow tile
+                {
+                    if (t.image != null)
+                    {
+                        imageTools.WriteImageIntoBiggerImage(spriteImage, t.image, t.TileXPos + Math.Abs(minX), t.TileYPos + Math.Abs(minY), false, false);
+                    }
+                }
+            }
+
+            //spriteImage.Save("test.png"); //TEMP
+        }
+    }
 }
